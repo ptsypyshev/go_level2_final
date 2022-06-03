@@ -1,9 +1,9 @@
 package filesystem
 
 import (
-	"github.com/ifireice/go_level2_final/cli/internal/filesystem/mock"
-	"github.com/ifireice/go_level2_final/cli/internal/filesystem/real"
-	model "github.com/ifireice/go_level2_final/cli/internal/model/filesystem"
+	"github.com/ptsypyshev/go_level2_final/cli/internal/filesystem/mock"
+	"github.com/ptsypyshev/go_level2_final/cli/internal/filesystem/real"
+	model "github.com/ptsypyshev/go_level2_final/cli/internal/model/filesystem"
 )
 
 type Filesystem interface {

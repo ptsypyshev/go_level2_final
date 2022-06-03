@@ -3,7 +3,7 @@ package mock
 import (
 	"strings"
 
-	model "github.com/ifireice/go_level2_final/cli/internal/model/filesystem"
+	model "github.com/ptsypyshev/go_level2_final/cli/internal/model/filesystem"
 )
 
 const FileSystemKind = "mock"

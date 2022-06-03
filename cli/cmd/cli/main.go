@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/ptsypyshev/go_level2_final/cli/internal/filesystem"
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/ifireice/go_level2_final/cli/internal/filesystem"
 )
+
 // что бы работало с обычной fs нужно запустить c -fs real
 var fsKind = flag.String("fs", "mock", "file system")
 
@@ -34,7 +34,6 @@ func main() {
 	}
 
 	fmt.Printf("\nFound files:\n\n%s", fileStats)
-
 
 	duplicatesStats := fileStats.FindDuplicates()
 	if len(duplicatesStats.List) > 0 {
