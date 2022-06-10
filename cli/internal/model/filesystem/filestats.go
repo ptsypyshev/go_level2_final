@@ -3,6 +3,7 @@ package filesystem
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"strconv"
 )
 
@@ -23,7 +24,7 @@ func (fs *FileStats) String() string {
 		buff.WriteString("  Size: ")
 		buff.WriteString(strconv.Itoa(fs.List[fileInd].SizeBytes))
 		buff.WriteString(" bytes\n")
-		buff.WriteString("  Directory: ")
+		buff.WriteString("  Parent directory: ")
 		buff.WriteString(fs.List[fileInd].ParentDir)
 		buff.WriteString("\n")
 		buff.WriteString("  Content: ")
@@ -36,23 +37,36 @@ func (fs *FileStats) String() string {
 	return buff.String()
 }
 
-// смотрит только на имена файлов надо допилить
 func (fs *FileStats) FindDuplicates() *FileStats {
-	duplicatesFilter := make(map[string][]*File)
+	duplicatesFilterByName := make(map[string][]*File)
 	for _, file := range fs.List {
-		listByName, ok := duplicatesFilter[file.Name]
+		listByName, ok := duplicatesFilterByName[file.Name]
 		if !ok {
-			duplicatesFilter[file.Name] = []*File{file}
+			duplicatesFilterByName[file.Name] = []*File{file}
 		} else {
 			listByName = append(listByName, file)
-			duplicatesFilter[file.Name] = listByName
+			duplicatesFilterByName[file.Name] = listByName
 		}
 	}
 
 	list := make([]*File, 0)
-	for _, listByName := range duplicatesFilter {
+	for _, listByName := range duplicatesFilterByName {
 		if len(listByName) > 1 {
-			list = append(list, listByName...)
+			duplicatesFilterBySize := make(map[int][]*File)
+			for _, file := range listByName {
+				listByName, ok := duplicatesFilterBySize[file.SizeBytes]
+				if !ok {
+					duplicatesFilterBySize[file.SizeBytes] = []*File{file}
+				} else {
+					listByName = append(listByName, file)
+					duplicatesFilterBySize[file.SizeBytes] = listByName
+				}
+			}
+			for _, listByNameAndSize := range duplicatesFilterBySize {
+				if len(listByNameAndSize) > 1 {
+					list = append(list, listByNameAndSize...)
+				}
+			}
 		}
 	}
 
@@ -67,5 +81,5 @@ type File struct {
 }
 
 func (f *File) FullPath() string {
-	return fmt.Sprintf("%s/%s", f.ParentDir, f.Name)
+	return fmt.Sprint(filepath.Join(f.ParentDir, f.Name))
 }
